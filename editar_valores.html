@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Valores dos Itens</title>
+    <style>
+        /* Reset de margens e paddings */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 15px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .button-red {
+            background-color: #e74c3c;
+        }
+
+        .button-red:hover {
+            background-color: #c0392b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            td {
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                font-weight: bold;
+                color: #333;
+                text-align: left;
+            }
+
+            th {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Editar Valores dos Itens</h1>
+
+    <!-- Formulário -->
+    <div class="form-container">
+        <div class="form-group">
+            <label for="novoProduto">Produto:</label>
+            <input type="text" id="novoProduto" placeholder="Nome do Produto">
+        </div>
+        <div class="form-group">
+            <label for="novoValor">Preço (R$/kg):</label>
+            <input type="number" id="novoValor" step="0.01" placeholder="Preço do Produto">
+        </div>
+        <button onclick="adicionarNovoItem()">Adicionar/Atualizar Produto</button>
+    </div>
+
+    <!-- Tabela -->
+    <h2>Lista de Produtos</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Preço (R$/kg)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaProdutos">
+            <!-- Linhas serão adicionadas dinamicamente -->
+        </tbody>
+    </table>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="index.html"><button class="button-red">Voltar ao Início</button></a>
+    </div>
+
+    <script>
+        const precos = JSON.parse(localStorage.getItem('precos')) || {};
+
+        function carregarTabela() {
+            const tabela = document.getElementById('tabelaProdutos');
+            tabela.innerHTML = '';
+            for (const produto in precos) {
+                const row = `<tr>
+                    <td data-label='Produto'>${produto}</td>
+                    <td data-label='Preço (R$/kg)' id="preco-${produto}">${precos[produto].toFixed(2)}</td>
+                    <td data-label='Ações'>
+                        <button onclick="editarProduto('${produto}')">Editar</button>
+                        <button onclick="removerProduto('${produto}')" class="button-red">Remover</button>
+                    </td>
+                </tr>`;
+                tabela.innerHTML += row;
+            }
+        }
+
+        function editarProduto(produto) {
+            const novoValor = prompt("Digite o novo valor para o produto:", precos[produto]);
+            if (novoValor !== null && !isNaN(novoValor) && novoValor > 0) {
+                precos[produto] = parseFloat(novoValor);
+                localStorage.setItem('precos', JSON.stringify(precos));
+                carregarTabela();
+            } else {
+                alert("Valor inválido.");
+            }
+        }
+
+        function adicionarNovoItem() {
+            const novoProduto = document.getElementById('novoProduto').value.trim();
+            const novoValor = parseFloat(document.getElementById('novoValor').value);
+
+            if (!novoProduto || isNaN(novoValor) || novoValor <= 0) {
+                alert('Preencha todos os campos corretamente.');
+                return;
+            }
+
+            precos[novoProduto] = novoValor;
+            localStorage.setItem('precos', JSON.stringify(precos));
+            carregarTabela();
+        }
+
+        function removerProduto(produto) {
+            if (confirm(`Tem certeza que deseja remover o produto \"${produto}\"?`)) {
+                delete precos[produto];
+                localStorage.setItem('precos', JSON.stringify(precos));
+                carregarTabela();
+            }
+        }
+
+        carregarTabela();
+    </script>
+</body>
+</html>
