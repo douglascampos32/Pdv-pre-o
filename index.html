@@ -119,15 +119,12 @@
     button {
         width: 100%;
         margin-top: 10px;
+        margin-bottom: 20px;
     }
 
-    table, thead, tbody, th, td, tr {
-        display: block;
-    }
+  
 
-    thead {
-        display: none; /* Esconde os títulos da tabela */
-    }
+   
 
     tr {
         margin-bottom: 15px;
@@ -145,18 +142,6 @@
         border: none;
     }
 
-    /* Exibe os títulos das colunas nos blocos */
-    td::before {
-        content: attr(data-label); /* Pega o valor do atributo "data-label" */
-        font-weight: bold;
-        color: #2c3e50;
-        display: block;
-        margin-bottom: 5px;
-    }
-    .header-container {
-    text-align: center; /* Centraliza a imagem e o título */
-    margin-bottom: 20px;
-}
 
 .header-image {
     max-width: 100px; /* Largura máxima da imagem */
@@ -251,7 +236,7 @@
 
 let nomeCliente;
 
-window.onload = function() {
+/*window.onload = function() {
     // Solicita o nome do cliente ao carregar a página
     nomeCliente = window.prompt("Por favor, insira o nome do cliente:");
 
@@ -269,7 +254,7 @@ window.onload = function() {
 
     // Renderiza a tabela ao carregar a página
     renderizarTabela();
-};
+};*/
 
 function obterValorUnitario(produto) {
     const precos = JSON.parse(localStorage.getItem('precos')) || {};
