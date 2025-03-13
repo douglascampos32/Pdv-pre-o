@@ -234,27 +234,7 @@
     document.getElementById('tara').value = '';
 }
 
-let nomeCliente;
 
-/*window.onload = function() {
-    // Solicita o nome do cliente ao carregar a página
-    nomeCliente = window.prompt("Por favor, insira o nome do cliente:");
-
-    // Caso o usuário não insira um nome, define um valor padrão
-    if (!nomeCliente) {
-        nomeCliente = "---";
-    }
-
-    // Obter a data atual
-    const dataAtual = new Date().toLocaleDateString('pt-BR');
-
-    // Inserir o nome do cliente e a data no cabeçalho da tabela
-    const headerInfo = document.getElementById("headerInfo");
-    headerInfo.textContent = ` Cliente: ${nomeCliente}    -   Data: ${dataAtual}`;
-
-    // Renderiza a tabela ao carregar a página
-    renderizarTabela();
-};*/
 
 function obterValorUnitario(produto) {
     const precos = JSON.parse(localStorage.getItem('precos')) || {};
@@ -295,10 +275,17 @@ function obterValorUnitario(produto) {
                 atualizarTabela();
             }
         }
-        async function finalizarPedido() {
+        let nomeCliente;
+
+async function finalizarPedido() {
     if (itens.length === 0) {
         alert('Adicione pelo menos um item antes de finalizar!');
         return;
+    }
+
+    nomeCliente = window.prompt("Por favor, insira o nome do cliente:");
+    if (!nomeCliente) {
+        nomeCliente = "---";
     }
 
     if (!confirm('Deseja finalizar o pedido e gerar o PDF?')) return;
@@ -306,9 +293,8 @@ function obterValorUnitario(produto) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Adiciona o título e a data
     const dataAtual = new Date().toLocaleDateString('pt-BR');
-    doc.text(`${nomeCliente}  ${dataAtual}`, 10, 10)
+    doc.text(`${nomeCliente}  ${dataAtual}`, 10, 10);
     
 
     // Agrupar itens por produto
